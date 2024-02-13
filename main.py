@@ -1,40 +1,49 @@
-# Initialize the dictionary with up to three initial key-value pairs
-sports_teams = {
-    "Team1": "Location1",
-    "Team2": "Location2",
-    "Team3": "Location3"
-}
+# Initialize a dictionary to store team data
+teams = {}
 
-# Function to print the key-value pairs
-def print_teams(teams):
-    for team, location in teams.items():
-        print(f"{team} - {location}")
-
-# Main program loop
 while True:
-    print_teams(sports_teams)
-    print("\nWhat would you like to do next?")
-    print("(A)dd a new team")
-    print("(R)emove a team")
-    print("(Q)uit")
+    # Print the Key-Value pairs separated by a space
+    for key, value in teams.items():
+        print(f"{key} {value}")
 
-    choice = input().strip().upper()
+    # Ask the user what to do next
+    choice = (
+        input(
+            "What would you like to do next?\n"
+            "a. (A)dd a new team\n"
+            "b. (R)emove a team\n"
+            "c. (S)how\n"
+            "d. (Q)uit\n"
+            "Enter your choice: "
+        )
+        .strip()
+        .lower()
+    )
 
-    if choice == "Q":
+    if choice == "q":  # If the user enters Q, the program ends
         break
-    elif choice == "R":
-        key_to_remove = input("Enter the name of the team to remove: ")
-        if key_to_remove in sports_teams:
-            del sports_teams[key_to_remove]
-            print(f"{key_to_remove} has been removed.")
-        else:
-            print(f"{key_to_remove} not found in the dictionary.")
-    elif choice == "A":
-        new_team = input("Enter the name of the new team: ")
-        location = input(f"Enter the location of {new_team}: ")
-        sports_teams[new_team] = location
-        print(f"{new_team} has been added to the dictionary.")
-    else:
-        print("Invalid choice. Please enter A, R, or Q.")
 
-print("Goodbye!")
+    elif choice == "s":  # If the user enters S, show the entire dictionary
+        if not teams:
+            print("The dictionary is empty.")
+        else:
+            print(teams)
+
+    elif choice == "r":  # If the user enters R, remove a team
+        key_to_remove = input("Enter the key of the team to remove: ").strip()
+        if key_to_remove in teams:
+            del teams[key_to_remove]
+            print(f"Team '{key_to_remove}' has been removed.")
+        else:
+            print(f"Team '{key_to_remove}' not found.")
+
+    elif choice == "a":  # If the user enters A, add a new team
+        team_location = input("Enter the location of the team: ").strip()
+        team_mascot = input("Enter the mascot of the team: ").strip()
+        if team_location and team_mascot:
+            teams[team_location] = team_mascot
+            print(f"Team '{team_location}' with mascot '{team_mascot}' has been added.")
+        else:
+            print("Both location and mascot must be provided.")
+    else:
+        print("Invalid choice. Please choose A, R, S, or Q.")

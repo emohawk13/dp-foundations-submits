@@ -1,62 +1,54 @@
-class BankATM:
-    def __init__(self):
-        self.balance = 0.0
+# Hogwarts Sorting Hat Program
 
-    def check_balance(self):
-        return f"Your balance is ${self.balance:.2f}"
+# Initialize the point counters for each house
+gryffindor_count = 0
+ravenclaw_count = 0
+hufflepuff_count = 0
+slytherin_count = 0
 
-    def deposit(self, amount):
-        try:
-            amount = float(amount)
-            if amount > 0:
-                self.balance += amount
-                return f"You have deposited ${amount:.2f}"
-            else:
-                return "Invalid deposit amount."
-        except ValueError:
-            return "Invalid input. Please enter a number."
+# Define questions then the corresponding answers
+questions = [
+    "What trait do you value most in yourself and others?\nA. Bravery\nB. Intelligence\nC. Kindness\nD. Ambition\n",
+    "You're faced with a difficult decision. What's your typical approach?\nA. Act quickly, without hesitation.\nB. Analyze the situation thoroughly and make an informed choice.\nC. Consider how your decision will impact others and choose accordingly.\nD. Take the path that will lead to the greatest overall success.\n",
+    "Which of the following animals would you choose as a pet?\nA. Lion\nB. Owl\nC. Badger\nD. Snake\n",
+    "You've been given a puzzle to solve. How do you approach it?\nA. Dive in headfirst and try different solutions until one works.\nB. Study the puzzle carefully, break it down into smaller parts, and solve it methodically.\nC. Collaborate with others to brainstorm solutions.\nD. Use your creativity and think outside the box to find a unique solution.\n",
+    "Which of these magical objects would you most want to possess?\nA. Sword of Gryffindor\nB. Invisibility Cloak\nC. Resurrection Stone\nD. Locket of Slytherin\n"
+]
 
-    def withdraw(self, amount):
-        try:
-            amount = float(amount)
-            if amount > 0:
-                if self.balance >= amount:
-                    self.balance -= amount
-                    return f"Please take your ${amount:.2f}. Your balance is now ${self.balance:.2f}"
-                else:
-                    return f"This amount exceeds your balance of ${self.balance:.2f}"
-            else:
-                return "Invalid withdrawal amount."
-        except ValueError:
-            return "Invalid input. Please enter a number."
+# Iterate through questions and get user answers
+for i, question in enumerate(questions, start=1):
+    answer = input(f"Question {i}:\n{question}").strip().lower()
+    if answer == 'a':
+        gryffindor_count += 1
+    elif answer == 'b':
+        ravenclaw_count += 1
+    elif answer == 'c':
+        hufflepuff_count += 1
+    elif answer == 'd':
+        slytherin_count += 1
+    else:
+        print("Invalid input. Please choose A, B, C, or D.")
 
-def main():
-    atm = BankATM()
-    print("Hello and Welcome to the Bank of Dauhson")
+# Determine the house with the most points
+house_points = {
+    "Gryffindor": gryffindor_count,
+    "Ravenclaw": ravenclaw_count,
+    "Hufflepuff": hufflepuff_count,
+    "Slytherin": slytherin_count
+}
 
-    while True:
-        print("\nPlease select from the following menu options:")
-        print("(B)alance")
-        print("(D)eposit")
-        print("(W)ithdraw")
-        print("(Q)uit")
-        choice = input().strip().lower()
+# Find the house with the highest count
+sorted_houses = sorted(house_points.items(), key=lambda x: x[1], reverse=True)
+winner_house, winner_points = sorted_houses[0]
 
-        if choice == 'b':
-            print(atm.check_balance())
-        elif choice == 'd':
-            deposit_amount = input("How Much Would You Like to Deposit? $")
-            print(atm.deposit(deposit_amount))
-        elif choice == 'w':
-            withdraw_amount = input("How much would you like to withdraw? (0 to cancel): $")
-            if withdraw_amount == '0':
-                continue
-            print(atm.withdraw(withdraw_amount))
-        elif choice == 'q':
-            print("Goodbye. Please come again")
-            break
-        else:
-            print("Invalid choice. Please select a valid option \n B for Balance, D for Deposit, W for Withdraw, and Q to quit using the ATM.")
+# Define traits for each house
+traits = {
+    "Gryffindor": "Daring, bravery, and chivalry.",
+    "Hufflepuff": "Patience, loyalty, and hard work.",
+    "Ravenclaw": "Intelligence, creativity, and wit.",
+    "Slytherin": "Cunning, ambition, and a hunger for power."
+}
 
-if __name__ == "__main__":
-    main()
+# Display the sorting result and traits
+print("\nSorting Hat's Verdict:")
+print(f"You belong in {winner_house}, known for {traits[winner_house]}")

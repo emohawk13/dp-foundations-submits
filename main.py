@@ -1,26 +1,27 @@
-# String Interpolation Assignment
+# Int
+print('Converting Int\'s')
+num_choice = input("Please select 1 or 0: ")
+num = int(num_choice) # Convert String to Int
+int_float = float(num)
+str_num = str(num)
+boo_num = bool(num)
 
-price1 = 125.5
-price2 = 75
-price3 = 3540.99
+print(f'num: {num} (type: {type(num)})')
+print(f'int_float: {int_float} (type: {type(int_float)})')
+print(f'str_num: {str_num} (type: {type(str_num)})')
+print(f'boo_num: {boo_num} (type: {type(boo_num)})')
+print()
 
-# Program 1
-print("Start of program 1")
-print(f'Price1 is $ {price1:.2f}')
-print(f'Price2 is $ {price2:.2f}')
-print(f'Price3 is $ {price3:.2f}')
-print("end of program 1")
+# Float
+print('Converting Floats')
+float_number_choice = input("Please choose a number that has a decimal point (example: '0.75'): ")
+float_number = float(float_number_choice)
+int_float = int(float_number)
+str_float = str(float_number)
+boo_float = float_number != 0
+
+print(f'num: {float_number} (type: {type(float_number)})')
+print(f'int_float: {int_float} (type: {type(int_float)})')
+print(f'str_float: {str_float} (type: {type(str_float)})')
+print(f'boo_float: {boo_float} (type: {type(boo_float)})')
 print()
-# Program 2
-print("Start of program 2")
-print(f'Price1 is $ {price1:>7.2f}')
-print(f'Price2 is $ {price2:>7.2f}')
-print(f'Price3 is $ {price3:>7.2f}')
-print("end of program 2")
-print()
-# Program 3
-print("Start of program 3")
-print(f'Price1 is $ {price1:>8.2f}')
-print(f'Price2 is $ {price2:>8.2f}')
-print(f'Price3 is $ {price3:,.2f}')
-print("end of program 3")

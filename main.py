@@ -1,12 +1,35 @@
 # Calendar App
 days_of_week = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
-months = [
-    "January", "February", "March", "April", "May", "June", "July", "August",
-    "September", "October", "November", "December",
-]
+max_days_in_month = {
+    "January": 31,
+    "February": 28, 
+    "March": 31,
+    "April": 30,
+    "May": 31,
+    "June": 30,
+    "July": 31,
+    "August": 31,
+    "September": 30,
+    "October": 31,
+    "November": 30,
+    "December": 31,
+}
 
-def user_input():
+def is_leap_year(year):
+    if year % 4 == 0:
+        if year % 100 == 0:
+            if year % 400 == 0:
+                return True
+            else:
+                return False
+        else:
+            return True
+    else:
+        return False
+
+def user_input(max_days_in_month):
     global year, start_day, num_days, month_choice 
+
     while True:
         try:
             day_of_week = input(
@@ -19,29 +42,33 @@ def user_input():
                 print("Please select a day from the provided list.")
         except ValueError:
             print("Please use the provided list.")
+    
     while True:
         try:
-            month_choice = input(
-                f"Please choose from this list which month you'd like: \n {', '.join(months)}: "
-            )
-            if month_choice in months:
+            print("Please choose a month:")
+            for i, month in enumerate(max_days_in_month.keys(), start=1):
+                print(f"{i}. {month}")
+            month_choice_num = int(input("Enter the number for the month: "))
+            months_list = list(max_days_in_month.keys())
+            if 1 <= month_choice_num <= len(max_days_in_month):
+                month_choice = months_list[month_choice_num - 1]
                 break
             else:
-                print("Please select a month from the provided list.")
+                print("Invalid choice. Please select a valid month number.")
         except ValueError:
-            print("Please use the provided list.")
+            print("Invalid input. Please enter a valid month number.")
+    
     while True:
         try:
             year = int(input("Please enter the year you would like to use: "))
             break
         except ValueError:
             print("Invalid input. Please enter a valid year.")
-    while True:
-        try:
-            num_days = int(input("Please enter the number of days for your month: "))
-            break
-        except ValueError:
-            print("Invalid input. Please enter a valid year.")
+    
+    if month_choice == "February" and is_leap_year(year):
+        num_days = 29
+    else:
+        num_days = max_days_in_month[month_choice]
 
 def generate_calendar(year, month_choice, start_day, num_days):
     start_index = days_of_week.index(start_day)
@@ -64,7 +91,8 @@ def generate_calendar(year, month_choice, start_day, num_days):
         print("   ".join(row))
 
 def start_calendar_app():
-    user_input()
+    user_input(max_days_in_month)
+    print("\n")
     generate_calendar(year, month_choice, start_day, num_days)
 
 if __name__ == "__main__":

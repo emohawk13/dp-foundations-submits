@@ -1,73 +1,40 @@
-# Calendar App
-days_of_week = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
-months = [
-    "January", "February", "March", "April", "May", "June", "July", "August",
-    "September", "October", "November", "December",
-]
+# Initialize the dictionary with up to three initial key-value pairs
+sports_teams = {
+    "Team1": "Location1",
+    "Team2": "Location2",
+    "Team3": "Location3"
+}
 
-def user_input():
-    global year, start_day, num_days, month_choice 
-    while True:
-        try:
-            day_of_week = input(
-                f"Please choose from this list which day does the chosen month start on: \n {', '.join(days_of_week)}: "
-            )
-            if day_of_week in days_of_week:
-                start_day = day_of_week
-                break
-            else:
-                print("Please select a day from the provided list.")
-        except ValueError:
-            print("Please use the provided list.")
-    while True:
-        try:
-            month_choice = input(
-                f"Please choose from this list which month you'd like: \n {', '.join(months)}: "
-            )
-            if month_choice in months:
-                break
-            else:
-                print("Please select a month from the provided list.")
-        except ValueError:
-            print("Please use the provided list.")
-    while True:
-        try:
-            year = int(input("Please enter the year you would like to use: "))
-            break
-        except ValueError:
-            print("Invalid input. Please enter a valid year.")
-    while True:
-        try:
-            num_days = int(input("Please enter the number of days for your month: "))
-            break
-        except ValueError:
-            print("Invalid input. Please enter a valid year.")
+# Function to print the key-value pairs
+def print_teams(teams):
+    for team, location in teams.items():
+        print(f"{team} - {location}")
 
-def generate_calendar(year, month_choice, start_day, num_days):
-    start_index = days_of_week.index(start_day)
-    print(f"{month_choice} {year}\n")
-    print("  ".join(days_of_week))
-    leading_spaces = ["  "] * start_index
-    calendar_rows = [[]] 
-    day = 1
-    calendar_rows[-1].extend(leading_spaces)
+# Main program loop
+while True:
+    print_teams(sports_teams)
+    print("\nWhat would you like to do next?")
+    print("(A)dd a new team")
+    print("(R)emove a team")
+    print("(Q)uit")
 
-    while day <= num_days:
-        calendar_rows[-1].append(f"{day:2d}")
-        day += 1
+    choice = input().strip().upper()
 
-        if len(calendar_rows[-1]) == 7:
-            calendar_rows.append([])  
-    while len(calendar_rows[-1]) < 7:
-        calendar_rows[-1].append("")
-    for row in calendar_rows:
-        print("   ".join(row))
+    if choice == "Q":
+        break
+    elif choice == "R":
+        key_to_remove = input("Enter the name of the team to remove: ")
+        if key_to_remove in sports_teams:
+            del sports_teams[key_to_remove]
+            print(f"{key_to_remove} has been removed.")
+        else:
+            print(f"{key_to_remove} not found in the dictionary.")
+    elif choice == "A":
+        new_team = input("Enter the name of the new team: ")
+        location = input(f"Enter the location of {new_team}: ")
+        sports_teams[new_team] = location
+        print(f"{new_team} has been added to the dictionary.")
+    else:
+        print("Invalid choice. Please enter A, R, or Q.")
 
-def start_calendar_app():
-    user_input()
-    generate_calendar(year, month_choice, start_day, num_days)
-
-if __name__ == "__main__":
-    start_calendar_app()
-
-
+print("Goodbye!")

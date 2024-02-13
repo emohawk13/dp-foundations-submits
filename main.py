@@ -1,27 +1,17 @@
-# Int
-print('Converting Int\'s')
-num_choice = input("Please select 1 or 0: ")
-num = int(num_choice) # Convert String to Int
-int_float = float(num)
-str_num = str(num)
-boo_num = bool(num)
+# Christmas Tree Program
 
-print(f'num: {num} (type: {type(num)})')
-print(f'int_float: {int_float} (type: {type(int_float)})')
-print(f'str_num: {str_num} (type: {type(str_num)})')
-print(f'boo_num: {boo_num} (type: {type(boo_num)})')
-print()
+height = int(input("Enter the height of the tree: "))
+print("Here is your tree:")
 
-# Float
-print('Converting Floats')
-float_number_choice = input("Please choose a number that has a decimal point (example: '0.75'): ")
-float_number = float(float_number_choice)
-int_float = int(float_number)
-str_float = str(float_number)
-boo_float = float_number != 0
+# For loop that takes the user input and builds the star pattern
+for i in range(1, height + 1):
+    print((" " * (height - i)) + ("* " * i))
+top_star_width = 2 * height - 1
 
-print(f'num: {float_number} (type: {type(float_number)})')
-print(f'int_float: {int_float} (type: {type(int_float)})')
-print(f'str_float: {str_float} (type: {type(str_float)})')
-print(f'boo_float: {boo_float} (type: {type(boo_float)})')
-print()
+trunk_height = int(height / 2)
+trunk_width = int(height / 2 + 1)
+spaces_before_trunk = int((top_star_width - trunk_width) / 2)
+
+for _ in range(trunk_height):
+    print((" " * spaces_before_trunk) + ("*" * trunk_width))
+

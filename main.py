@@ -1,176 +1,111 @@
-import sqlite3
+# Create a program that will run a movie theater
 
-field_mapping = {
-    '1': 'name',
-    '2': 'street_address',
-    '3': 'city',
-    '4': 'state',
-    '5': 'postal_code',
-    '6': 'phone',
-    '7': 'email'
+# Requirements:
+#   1. Different prices for kids under 3, under 12 (kids ticket), adults (12-65), and seniors (65+) -Done
+#   2. 3-5 different Movies with 4-5 showtimes each - Done
+#   3. Ability to buy multiple tickets - Done
+#   4. Concessions which include Popcorn, Drink, Hotdog, Nachos, Candy with prices - should be able to choose more than one - Done
+#   5. Checkout with subtotal and tax - Done
+
+# Movie data List
+movies = [
+    {"title": "This Movie", "showtimes": ["10:00 AM", "2:00 PM", "6:00 PM", "9:00 PM"]},
+    {"title": "That Movie", "showtimes": ["11:00 AM", "3:00 PM", "7:00 PM", "9:00 PM"]},
+    {"title": "DJ Khaled presents Another One", "showtimes": ["11:00 AM", "3:00 PM", "7:00 PM", "9:00 PM"]},
+    {"title": "DJ Khaled presents Another One part 2", "showtimes": ["11:00 AM", "3:00 PM", "7:00 PM", "9:00 PM"]},
+]
+
+# Ticket prices List
+ticket_prices = {
+    "kid": 5.0,
+    "child": 10.0,
+    "adult": 15.0,
+    "senior": 12.0
 }
 
-# factory to handle data transmission 
-class DatabaseConnector:
-    def __init__(self):
-        self.connection = sqlite3.connect('dp_customers.db')
-        self.cursor = self.connection.cursor()
+# Concession prices List
+concession_prices = {
+    "popcorn": 5.0,
+    "drink": 3.0,
+    "hotdog": 4.0,
+    "nachos": 4.5,
+    "candy": 2.5
+}
 
-    def read_customers(self):
-        self.cursor.execute("SELECT * FROM Customers")
-        rows = self.cursor.fetchall()
-        return rows
-    
-    def search_customers(self, search):
-        try:
-            customer_id = int(search)
-        except ValueError:
-            print("Invalid customer ID. Please enter a valid integer.")
-            return []
-        
-        query = """SELECT customer_id, name, street_address, city, state, postal_code, phone, email 
-                FROM Customers 
-                WHERE customer_id = ?"""
-        self.cursor.execute(query, (customer_id,))
-        rows = self.cursor.fetchall()
-        return rows
+def select_movie():
+    print("Select a movie:")
+    for i, movie in enumerate(movies):
+        print(f"{i + 1}. {movie['title']}")
+    choice = int(input("Enter the number for the movie: ")) - 1
+    return movies[choice]
 
-    
-    def update_customers(self, customer_id, field, new_value):
-        if field not in ['name', 'city', 'state', 'postal_code', 'phone', 'email', 'street_address']:
-            print("Invalid field. Update not performed.")
-            return
-        
-        update_query = f"UPDATE Customers SET {field} = ? WHERE customer_id = ?"
-        self.cursor.execute(update_query, (new_value, customer_id))
-        self.connection.commit()
-        print(f"Customer {field} updated to {new_value}.")
+def select_showtime(movie):
+    print(f"Select a showtime for {movie['title']}:")
+    for i, showtime in enumerate(movie['showtimes']):
+        print(f"{i + 1}. {showtime}")
+    choice = int(input(f"Select the number to choose showtime for {movie['title']}: ")) - 1
+    return movie['showtimes'][choice]
 
-        
-    def add_customers(self, add_values):
-        add_query = """
-        INSERT INTO Customers (name, street_address, city, state, postal_code, phone, email)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
-        """
-        self.cursor.execute(add_query, add_values)
-        self.connection.commit()
-        print("New customer has been added.")
-        
-    def delete_customers(self, customer_id):
-        delete_query = "DELETE FROM Customers WHERE customer_id = ?"
-        self.cursor.execute(delete_query, (customer_id,))
-        self.connection.commit()
+def buy_tickets():
+    num_tickets = int(input("Enter the number of tickets: "))
+    subtotal = 0.0
+    for _ in range(num_tickets):
+        print("Select a ticket type:")
+        print("1. Kid (Under 3)")
+        print("2. Child (3-12 years)")
+        print("3. Adult (12-65 years)")
+        print("4. Senior (65+ years)")
+        ticket_type = int(input("Enter the number of the ticket type: "))
+        if ticket_type == 1:
+            subtotal += ticket_prices["kid"]
+        elif ticket_type == 2:
+            subtotal += ticket_prices["child"]
+        elif ticket_type == 3:
+            subtotal += ticket_prices["adult"]
+        elif ticket_type == 4:
+            subtotal += ticket_prices["senior"]
+    return subtotal
 
-def display_customer_info(customers):
-    print("--- Customers ---")
-    print(f'{"ID":<12} {"Name":<12} {"City":<28} {"Phone":<23} {"Email":<23}')
-    for row in customers:
-        if row is not None and all(field is not None and field != "" for field in row):
-            print(f'{row[0]:<10} {row[1]:<25} {row[3]:<25} {row[6]:<25} {row[7]:<25} ')
-
-def display_one_customer(customer):
-    if customer:
-        print("+++ Customer Detail +++")
-        print(f'{"ID:":<15}{customer[0]}\n{"Name:":<15}{customer[1]}\n{"Address:":<15} {customer[2]}\n{"City:":<15}{customer[3]}\n{"State:":<15}{customer[4]}\n{"Zip Code:":<15}{customer[5]}\n{"Phone:":<15}{customer[6]}\n{"Email:":<15}{customer[7]}\n')
-    else:
-        print("No customer found with that ID.")
-
-def print_update_options():
-    for number, field in field_mapping.items():
-        print(f"[{number}] {field.capitalize()}")
-
-def main_menu():
-    greeting = "****** Customer Database ******"
-    print("-" * len(greeting))
-    print(greeting)
-    print("-" * len(greeting))
-
-    db_connector = DatabaseConnector()
-
+def order_concessions():
+    total_cost = 0.0
     while True:
-        print("Main Menu:")
-        print("[1] View All Customers")
-        print("[2] Search Customers")
-        print("[3] Add a new Customer")
-        print("[0] Exit")
-
-        choice = input("Enter your choice: ")
-
-        if choice == "1":
-            rows = db_connector.read_customers() 
-            print("\nCustomer Information:")
-            display_customer_info(rows) 
-
-            while True:
-                inner_choice = input("Enter a Customer ID to view a Customer:\nOr press '0' to return to the main menu: ")
-                if inner_choice != '0':
-                    customer_id = int(inner_choice)
-                    rows = db_connector.search_customers(customer_id)
-                    if rows:
-                        print("\nCustomer Information:")
-                        display_one_customer(rows[0])
-                    else:
-                        print("No customer found with that ID.")
-                else:
-                    break
-
-        elif choice == "2":
-            search = input("Enter the Customer ID: \n")
-            rows = db_connector.search_customers(search)
-            if rows:
-                display_one_customer(rows[0])
-                print("[1] Update Customer")
-                print("[2] Delete Customer")
-                print("[0] Return to Main Menu")
-                while True:  
-                    field_choice = input("Select an option: ")
-                    if field_choice == '1':
-                        print_update_options()
-                        update_choice = input("Enter the number for the field to update: ")
-                        if update_choice in field_mapping:
-                            field = field_mapping[update_choice]
-                            new_value = input(f"Enter the new {field}: ")
-                            db_connector.update_customers(search, field, new_value)
-                            print(f"{field.capitalize()} updated successfully.")
-                        else:
-                            print("Invalid field selection. Please try again.")
-                    elif field_choice == '2':
-                        confirm_delete = input("Are you sure you want to delete this customer? Type 'y' to confirm or 'n' to cancel: ").lower()
-                        if confirm_delete == 'y':
-                            db_connector.delete_customers(search)
-                            print("Customer deleted.")
-                            break 
-                        else:
-                            print("Customer deletion canceled.")
-                    elif field_choice == '0':
-                        print("Returning to the main menu...")
-                        break
-                    else:
-                        print("Invalid command. Please try again.")
-            else:
-                print("No customer found with that ID.")
-
-
-        elif choice == "3":
-            new_name = input("Enter the new name: ")
-            new_address = input("Enter the new street address: ")
-            new_city = input("Enter the new city: ")
-            new_state = input("Enter the new state: ")
-            new_postal_code = input("Enter the new zip code: ")
-            new_phone = input("Enter the new phone: ")
-            new_email = input("Enter the new email: ")
-            
-            add_values = (new_name, new_address, new_city, new_state, new_postal_code, new_phone, new_email)
-            db_connector.add_customers(add_values)
-            print(f"Customer {new_name} successfully added!")
-
-        elif choice == "0":
-            print("Exiting the program. Goodbye!")
-            db_connector.connection.close()
+        print("Select a concession item:")
+        for i, item in enumerate(concession_prices.keys()):
+            print(f"{i + 1}. {item} (${concession_prices[item]})")
+        print("0. Done ordering")
+        choice = int(input("Enter the number of the item (or 0 to finish): "))
+        if choice == 0:
             break
-        else:
-            print("Invalid choice. Please enter 1, 2, 3, or 0.")
+        elif choice - 1 in range(len(concession_prices)):
+            item = list(concession_prices.keys())[choice - 1]
+            quantity = int(input(f"Enter the quantity of {item}: "))
+            total_cost += concession_prices[item] * quantity
+    return total_cost
+
+def calculate_total(subtotal, concessions_cost):
+    tax_rate = 0.08
+    tax = (subtotal + concessions_cost) * tax_rate
+    total = subtotal + concessions_cost + tax
+    return total
+
+def movie():
+    print("Welcome to the Movie Theater!")
+    
+    selected_movie = select_movie()
+    selected_showtime = select_showtime(selected_movie)
+    subtotal = buy_tickets()
+    concessions_cost = order_concessions()
+    total = calculate_total(subtotal, concessions_cost)
+
+    # 4 receipt
+    print("\nReceipt:")
+    print(f"Movie: {selected_movie['title']} ({selected_showtime})")
+    print(f"Ticket Subtotal: ${subtotal:.2f}")
+    print(f"Concessions Total: ${concessions_cost:.2f}")
+    print(f"SubTotal: ${subtotal + concessions_cost:.2f}")
+    print(f"Tax: ${total - subtotal - concessions_cost:.2f}")
+    print(f"Total: ${total:.2f}")
+    print("Enjoy the movie!")
 
 if __name__ == "__main__":
-    main_menu()
-
+    movie()
